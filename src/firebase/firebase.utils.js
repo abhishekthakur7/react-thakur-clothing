@@ -4,13 +4,13 @@ import 'firebase/auth';
 
   // Web app's Firebase configuration
   var firebaseConfig = {
-    apiKey: "AIzaSyANnH8hNJOrJAOhf4B0Rl5RcVNRvwpMqRM",
-    authDomain: "react-thakur-clothing-db.firebaseapp.com",
-    databaseURL: "https://react-thakur-clothing-db.firebaseio.com",
-    projectId: "react-thakur-clothing-db",
+    apiKey: "AIzaSyA0mb71slXadE9YFiPS9sDRZPr32vC3_YY",
+    authDomain: "thakur-db.firebaseapp.com",
+    databaseURL: "https://thakur-db.firebaseio.com",
+    projectId: "thakur-db",
     storageBucket: "",
-    messagingSenderId: "848684756280",
-    appId: "1:848684756280:web:c65f0af9968acd16"
+    messagingSenderId: "401390780655",
+    appId: "1:401390780655:web:4778f41c052b5a34"
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
