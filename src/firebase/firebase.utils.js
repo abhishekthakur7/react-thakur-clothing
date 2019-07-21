@@ -14,7 +14,7 @@ import 'firebase/auth';
   };
 
   export const createUserProfileDocument = async (userAuth, ...additionalData) => {
-    if(!userAuth) { //userAuth is null when user sign out, the firebase.signOut() returns null
+    if(!userAuth) { //userAuth is user only, userAuth is null when user sign out, the firebase.signOut() returns null
       return;
     }
 
