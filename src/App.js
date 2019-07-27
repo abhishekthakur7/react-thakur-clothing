@@ -1,28 +1,26 @@
 import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
+
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './components/shop/shop.component';
-import SignInSignUp from './pages/sign-in-sign-up/sign-in-sign-up.component';
+import SignInAndSignUpPage from './pages/sign-in-sign-up/sign-in-sign-up.component';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { setCurrentUser } from './redux/user/user-actions';
 
 class App extends React.Component {
-  
-  constructor() {
-    super();
-    this.state = {
-      currentUser: null
-    }
-  }
-
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    const { setCurrentUser } = this.props;
+
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { //onAuthStateChanged is a listener which keeps checking for any change in logged in user, in authentication purpose
-      
-      if(userAuth) {
+      if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
+
         // const snapSht = await userRef.get();
         // this.setState({
         //   currentUser : {
@@ -30,19 +28,16 @@ class App extends React.Component {
         //     ...snapSht.data()
         //   }
         // })
-        userRef.onSnapshot(snapshot => {  //https://firebase.google.com/docs/firestore/query-data/listen, subsribe to any change in currentUser
-          this.setState({
-            currentUser : {
-              id: snapshot.id,
-              ...snapshot.data()
-            }
-          }, () => { console.log(this.state) })
-        });
-      } else { //User is not logged in
-        this.setState({
-          currentUser: null
+
+        userRef.onSnapshot(snapShot => { //https://firebase.google.com/docs/firestore/query-data/listen, subsribe to any change in currentUser
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data()
+          });
         });
       }
+
+      setCurrentUser(userAuth);
     });
   }
 
@@ -53,16 +48,22 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header currentUser = { this.state.currentUser }/>
+        <Header />
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
-          <Route path='/signin' component={SignInSignUp} /> 
+          <Route path='/signin' component={SignInAndSignUpPage} />
         </Switch>
       </div>
     );
   }
-  
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({ //Dispatch is action object which is passed to every reducer by redux
+  setCurrentUser: user => dispatch(setCurrentUser(user)) //setCurrentUser to object in setCurrentUser() from user actions
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(App);
