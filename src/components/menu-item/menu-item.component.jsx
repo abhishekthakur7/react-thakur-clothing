@@ -4,7 +4,6 @@ import './menu-item.styles.scss';
 
 const MenuItem = ({ title, imageUrl, size, history, match, linkUrl }) => (  //history and match prop came from 'withRouter' higher order component
     <div className={`${size} menu-item`} onClick = {() => history.push(`${match.url}${linkUrl}`)}>
-        { console.log(match) }
         <div className='background-image' style={{backgroundImage: `url(${imageUrl})`}} >
         </div>
         <div className='content'>

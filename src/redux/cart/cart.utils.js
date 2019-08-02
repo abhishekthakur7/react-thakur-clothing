@@ -10,7 +10,6 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
 
 //method to remove item from cart, also existing item count shouldn't be less than 1
 export const removeItemsFromCart = (cartItems, cartItemToRemove) => {
-    console.log('Im called');
     const existingCartItem = cartItems.find(
         cartItem => cartItem.id === cartItemToRemove.id
     );
