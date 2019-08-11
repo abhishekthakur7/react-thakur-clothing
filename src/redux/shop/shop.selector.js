@@ -26,5 +26,5 @@ export const selectIsCollectionFetching = createSelector(
 
 export const selectIsCollectionsLoaded = createSelector(
   [selectShop],
-  shop => !!shop.collections
+  shop => !!shop.collections  //default value of collections is null because its loaded after data is fetched, so !null = true, then !true = false... so setting shop value as false
 );
