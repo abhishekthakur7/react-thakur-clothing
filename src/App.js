@@ -1,7 +1,7 @@
 import React from 'react';
-
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import './App.css';
 
@@ -9,42 +9,45 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './components/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-sign-up/sign-in-sign-up.component';
 import CheckoutPage from './components/checkout/checkout.component';
+
 import Header from './components/header/header.component';
 
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
-
-import { setCurrentUser } from './redux/user/user-actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
-import  {createStructuredSelector} from 'reselect';
+import { checkUserSession } from './redux/user/user-actions';
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
+  // componentDidMount() {
+  //   const { setCurrentUser } = this.props;
+
+  //   this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { //onAuthStateChanged is a listener which keeps checking for any change in logged in user, in authentication purpose
+  //     if (userAuth) {
+  //       const userRef = await createUserProfileDocument(userAuth);
+
+  //       // const snapSht = await userRef.get();
+  //       // this.setState({
+  //       //   currentUser : {
+  //       //     id: snapSht.id,
+  //       //     ...snapSht.data()
+  //       //   }
+  //       // })
+
+  //       userRef.onSnapshot(snapShot => { //https://firebase.google.com/docs/firestore/query-data/listen, subsribe to any change in currentUser
+  //         setCurrentUser({
+  //           id: snapShot.id,
+  //           ...snapShot.data()
+  //         });
+  //       });
+  //     }
+
+  //     setCurrentUser(userAuth);
+  //   });
+  // }
+
   componentDidMount() {
-    const { setCurrentUser } = this.props;
-
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => { //onAuthStateChanged is a listener which keeps checking for any change in logged in user, in authentication purpose
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-
-        // const snapSht = await userRef.get();
-        // this.setState({
-        //   currentUser : {
-        //     id: snapSht.id,
-        //     ...snapSht.data()
-        //   }
-        // })
-
-        userRef.onSnapshot(snapShot => { //https://firebase.google.com/docs/firestore/query-data/listen, subsribe to any change in currentUser
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data()
-          });
-        });
-      }
-
-      setCurrentUser(userAuth);
-    });
+    const { checkUserSession } = this.props;
+    checkUserSession();
   }
 
   componentWillUnmount() {
@@ -59,19 +62,29 @@ class App extends React.Component {
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
           <Route exact path='/checkout' component={CheckoutPage} />
-          <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInAndSignUpPage />)} />
+          <Route
+            exact
+            path='/signin'
+            render={() =>
+              this.props.currentUser ? (
+                <Redirect to='/' />
+              ) : (
+                <SignInAndSignUpPage />
+              )
+            }
+          />
         </Switch>
       </div>
     );
   }
 }
 
-const mapStateToProps = createStructuredSelector ({
-  currentUser: selectCurrentUser //get currentUser from store
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser
 });
 
-const mapDispatchToProps = dispatch => ({ //Dispatch is action object which is passed to every reducer by redux
-  setCurrentUser: user => dispatch(setCurrentUser(user)) //setCurrentUser to object in setCurrentUser() from user actions
+const mapDispatchToProps = dispatch => ({
+  checkUserSession: () => dispatch(checkUserSession())
 });
 
 export default connect(

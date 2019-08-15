@@ -13,6 +13,9 @@ import 'firebase/auth';
     appId: "1:401390780655:web:4778f41c052b5a34"
   };
 
+   // Initialize Firebase
+   firebase.initializeApp(firebaseConfig);
+
   export const createUserProfileDocument = async (userAuth, ...additionalData) => {
     if(!userAuth) { //userAuth is user only, userAuth is null when user sign out, the firebase.signOut() returns null
       return;
@@ -71,16 +74,23 @@ import 'firebase/auth';
     }, {});
   };
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+  export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = auth.onAuthStateChanged(userAuth => {
+        unsubscribe();
+        resolve(userAuth);
+      }, reject);
+    });
+  };
 
   export const auth = firebase.auth();
   export const firestore = firebase.firestore();
 
   //Config for google sign in
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' }); //prompt will trigger pop up window to login with google id
+  //const provider = new firebase.auth.GoogleAuthProvider();
+  export const googleProvider = new firebase.auth.GoogleAuthProvider();
+  googleProvider.setCustomParameters({ prompt: 'select_account' }); //prompt will trigger pop up window to login with google id
 
-  export const signInWithGoogle = () => auth.signInWithPopup(provider);
+  export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
   export default firebase;

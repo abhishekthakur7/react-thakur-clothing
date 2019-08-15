@@ -1,4 +1,4 @@
-import CartActionTypes from './cart.action.types';
+import CartActionTypes from './cart.types';
 import { addItemToCart, removeItemsFromCart } from './cart.utils';
 
 const INITIAL_VALUE = {
@@ -28,6 +28,11 @@ const CartReducer = (prevState = INITIAL_VALUE, action) => {
                 ...prevState,
                 cartItems: removeItemsFromCart(prevState.cartItems, action.payload)
             }
+        case CartActionTypes.CLEAR_CART:
+            return {
+                ...prevState,
+                cartItems: []
+            };
         default:
             return prevState;
     }

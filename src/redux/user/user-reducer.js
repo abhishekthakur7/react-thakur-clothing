@@ -1,22 +1,34 @@
 import UserActionTypes from './user.types';
 
 const INITIAL_STATE = {
-    currentUser: null
+  currentUser: null,
+  error: null
 };
 
-const userReducer = (prevState = INITIAL_STATE, action) => {
-
-    switch(action.type) {
-        case UserActionTypes.SET_CURRENT_USER:
-            return {
-                ...prevState,
-                currentUser: action.payload
-            }
-        default:
-            return prevState;   //Always return prevstate because all the reducers are triggered for any action,
-                                //we would not like to update state from this reducer if action type doesn't match
-    }
-
+const userReducer = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case UserActionTypes.SIGN_IN_SUCCESS:
+      return {
+        ...state,
+        currentUser: action.payload,
+        error: null
+      };
+    case UserActionTypes.SIGN_OUT_SUCCESS:
+      return {
+        ...state,
+        currentUser: null,
+        error: null
+      };
+    case UserActionTypes.SIGN_IN_FAILURE:
+    case UserActionTypes.SIGN_OUT_FAILURE:
+    case UserActionTypes.SIGN_UP_FAILURE:
+      return {
+        ...state,
+        error: action.payload
+      };
+    default:
+      return state;
+  }
 };
 
 export default userReducer;
