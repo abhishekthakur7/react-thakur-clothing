@@ -3,10 +3,10 @@ import React from 'react';
 import Homepage from './homepage.styles';
 import Directory from '../../components/directory/directory.component';
 
-const HomePageContainer = () => (
-    <Homepage>
+const HomePageContainer = () => {
+    return(<Homepage>
         <Directory />
-    </Homepage>
-);
+    </Homepage>)
+};
 
 export default HomePageContainer;
